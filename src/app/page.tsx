@@ -15,7 +15,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            By Lt
+            By Lt2
           </a>
         </div>
       </div>
