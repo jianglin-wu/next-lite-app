@@ -18,7 +18,10 @@ export default function Home() {
       const rect = document
         .getElementById('circle-container')!
         .getBoundingClientRect();
-      confRef.current.radius = rect.width / 2;
+      const circleDotRect = document
+        .getElementById('circle-dot')!
+        .getBoundingClientRect();
+      confRef.current.radius = rect.width / 2 - circleDotRect.width / 2;
       const centerPos = {
         x: rect.left + rect.width / 2,
         y: rect.top + rect.height / 2,
@@ -50,8 +53,18 @@ export default function Home() {
     initConf();
     updatePosition(confRef.current.centerPos.x, confRef.current.centerPos.y);
 
+    let lock = false;
+    let throttle: { x: number; y: number } | null = null;
     const handleMouseMove = (e: MouseEvent) => {
-      updatePosition(e.clientX, e.clientY);
+      throttle = { x: e.clientX, y: e.clientY };
+      if (lock) return;
+      lock = true;
+      window.requestAnimationFrame(() => {
+        lock = false;
+        if (throttle) {
+          updatePosition(throttle.x, throttle.y);
+        }
+      });
     };
     window.addEventListener('mousemove', handleMouseMove);
 
@@ -77,6 +90,7 @@ export default function Home() {
         className="bg-blue-50/10 rounded-full w-96 h-96"
       >
         <div
+          id="circle-dot"
           className="border bg-red-500 rounded-full w-2 h-2 -translate-x-1/2 -translate-y-1/2 absolute"
           style={{ left: position.x, top: position.y }}
         ></div>
