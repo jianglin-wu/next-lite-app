@@ -55,8 +55,16 @@ export default function Home() {
 
     let lock = false;
     let throttle: { x: number; y: number } | null = null;
-    const handleMouseMove = (e: MouseEvent) => {
-      throttle = { x: e.clientX, y: e.clientY };
+    const handleMouseMove = (e: MouseEvent | TouchEvent) => {
+      if (e.type === 'mousemove') {
+        throttle = {
+          x: (e as MouseEvent).clientX,
+          y: (e as MouseEvent).clientY,
+        };
+      } else if (e.type === 'touchmove') {
+        const touch = (e as TouchEvent).touches[0];
+        throttle = { x: touch.clientX, y: touch.clientY };
+      }
       if (lock) return;
       lock = true;
       window.requestAnimationFrame(() => {
@@ -67,6 +75,7 @@ export default function Home() {
       });
     };
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleMouseMove);
 
     // 监听窗口变化
     const handleResize = () => {
@@ -79,6 +88,7 @@ export default function Home() {
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
