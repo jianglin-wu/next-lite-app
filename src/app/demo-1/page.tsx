@@ -56,6 +56,8 @@ export default function Home() {
     let lock = false;
     let throttle: { x: number; y: number } | null = null;
     const handleMouseMove = (e: MouseEvent | TouchEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
       if (e.type === 'mousemove') {
         throttle = {
           x: (e as MouseEvent).clientX,
@@ -77,6 +79,11 @@ export default function Home() {
     };
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('touchmove', handleMouseMove);
+    const disableScroll = (e: Event) => {
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    window.addEventListener('scroll', disableScroll);
 
     // 监听窗口变化
     const handleResize = () => {
@@ -91,6 +98,7 @@ export default function Home() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchmove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', disableScroll);
     };
   }, []);
 
