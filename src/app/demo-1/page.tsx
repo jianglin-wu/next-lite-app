@@ -73,6 +73,7 @@ export default function Home() {
           updatePosition(throttle.x, throttle.y);
         }
       });
+      return false;
     };
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('touchmove', handleMouseMove);
